@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 import time
 from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException
+import locale
+locale.setlocale(locale.LC_ALL, '')
 
 edge_options = webdriver.EdgeOptions()
 edge_options.add_argument("--disable-features=EdgeExperimentsWithFeatures,EdgeExperimentsWithFeaturesCollection")
@@ -56,13 +58,14 @@ for row, datos in df.iterrows():
             dias_diferencia = (fecha_term_poliza_date - fecha_actual).days
 
             if dias_diferencia < 0:
-                comentario = 'La poliza venció hace {dias_diferencia} días.'
-                print(comentario)
+                dias_diferencia = abs(dias_diferencia)
+                comentario = f'La poliza venció hace {dias_diferencia} días.'
+                return comentario
             elif dias_diferencia > 0: 
-                comentario = 'Quedan {dias_diferencia} días para terminar.'
-                print(comentario)
+                comentario = f'Quedan {dias_diferencia} días para terminar.'
+                return comentario
 
-        dias_faltantes(fecha_inicio_poliza, fecha_term_poliza)
+        comentario = dias_faltantes(fecha_inicio_poliza, fecha_term_poliza)
 
         print('Estado poliza: ', estado_poliza)
         print('inicio: ',fecha_inicio_poliza)
@@ -111,34 +114,37 @@ for row, datos in df.iterrows():
         fecha_inicio_poliza = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/main/section/div[2]/div/div/form/div[3]/table[1]/tbody/tr/td/div[2]/table/tbody/tr[2]/td[7]').text[:-8].strip()
         fecha_termino_poliza = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/main/section/div[2]/div/div/form/div[3]/table[1]/tbody/tr/td/div[2]/table/tbody/tr[2]/td[8]').text[:-8].strip()
         
+        print('fecha inicio extraida: ', fecha_inicio_poliza)
         print('fecha termino extraida: ', fecha_termino_poliza)
 
         def dias_faltantes(fecha_inicio_poliza, fecha_term_poliza):
             # Convertir las cadenas de fecha en objetos datetime
             fecha_inicio_poliza_date = datetime.strptime(fecha_inicio_poliza, '%d-%m-%Y').date()
             fecha_term_poliza_date = datetime.strptime(fecha_term_poliza, '%d-%m-%Y').date()
-            print('fecha termino date: ', fecha_term_poliza_date)
-            # Calcular la diferencia entre las fechas
-            fecha_actual = datetime.now().date()
-            dias_diferencia = (fecha_term_poliza_date - fecha_actual).days
+            
+            #toma fecha actual, la formatea y la vuelve a date
+            fecha_actual = datetime.now()
+            fecha_actual = datetime.strftime(fecha_actual, '%d-%m-%Y')
+            fecha_actual_formateada = datetime.strptime(fecha_actual, '%d-%m-%Y').date()
+            dias_diferencia = (fecha_term_poliza_date - fecha_actual_formateada).days
 
+            #Calculo de dias pasados o por terminar
             if dias_diferencia < 0:
-                comentario = 'La poliza venció hace '+str(dias_diferencia)+' días.'
-                # print(comentario)
+                comentario = f'La poliza venció hace {dias_diferencia} días.'
+                return comentario
             elif dias_diferencia > 0: 
-                comentario = 'Quedan '+str(dias_diferencia)+' días para terminar.'
-                # print(comentario)
-
+                comentario = f'Quedan {dias_diferencia} días para terminar.'
+                return comentario
 
         print('Estado poliza: ', estado_poliza)
         print('inicio: ',fecha_inicio_poliza)
-        print('termino: ',fecha_term_poliza)
-        dias_faltantes(fecha_inicio_poliza, fecha_termino_poliza)
+        print('termino: ',fecha_termino_poliza)
+        comentario = dias_faltantes(fecha_inicio_poliza, fecha_termino_poliza)
         print('comentario: ',comentario)
 
         df.at[row, 'estado_seguro'] = estado_poliza
         df.at[row, 'fecha_inicio'] = fecha_inicio_poliza
-        df.at[row, 'fecha_termino'] = fecha_term_poliza
+        df.at[row, 'fecha_termino'] = fecha_termino_poliza
         df.at[row, 'comentario'] = comentario
 
         #vuelta
