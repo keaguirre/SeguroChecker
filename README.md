@@ -35,17 +35,15 @@ Este repositorio contiene una herramienta desarrollada en Python que automatiza 
 
 9. Una vez que el proceso esté completo, recibirás un mensaje de finalización en la interfaz de la aplicación, sugiriendo que cierres la aplicación.
 
-## Contribuciones
-
-Si deseas contribuir a este proyecto, puedes realizar un fork del repositorio, hacer tus modificaciones y luego enviar un pull request. ¡Estamos abiertos a colaboraciones!
-
 ## Notas
 
 - Esta herramienta utiliza Selenium para automatizar la navegación en la web. Asegúrate de tener instalado el controlador adecuado y que esté configurado para trabajar con Microsoft Edge versión 115.0.1901.188.
 
-- Asegúrate de tener las dependencias de Python instaladas. Puedes instalarlas utilizando el archivo `requirements.txt` proporcionado.
+- Asegúrate de tener las dependencias de Python instaladas. Puedes instalarlas utilizando el archivo `requirements.txt` proporcionado (En caso de colaboración).
 
-- Esta herramienta fue desarrollada y probada hasta mi conocimiento en septiembre de 2021. Cualquier cambio en la estructura de la página web de la Aach o en la versión del navegador podría requerir ajustes en el código.
+- Esta herramienta fue desarrollada y probada hasta mi conocimiento en Agosto de 2023. Cualquier cambio en la estructura de la página web de la Aach o en la versión del navegador podría requerir ajustes en el código.
+
+- Falta hacer manejo de errores y testing del software durante su primera release.
 
 ¡Esperamos que esta herramienta sea útil para automatizar tus procesos de consulta de seguros! Si tienes algún problema, sugerencia o consulta, no dudes en abrir un issue en este repositorio.
 
